@@ -1,52 +1,46 @@
-const used = localStorage.getItem('used');
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const captureBtn = document.getElementById('captureBtn');
-const deleteBtn = document.getElementById('deleteBtn');
-const passwordForm = document.getElementById('passwordForm');
-const cameraArea = document.getElementById('cameraArea');
+const correctPassword = "123456"; // Mật khẩu dùng nhiều lần
+const passwordForm = document.getElementById("passwordForm");
+const passwordInput = document.getElementById("password");
+const cameraArea = document.getElementById("cameraArea");
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const captureBtn = document.getElementById("captureBtn");
+const deleteBtn = document.getElementById("deleteBtn");
 
-const ALLOW_PASSWORD = '123456';
-const allowMulti = /iPhone/i.test(navigator.userAgent);
+passwordForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (passwordInput.value === correctPassword) {
+    passwordForm.classList.add("hidden");
+    cameraArea.classList.remove("hidden");
+    startCamera();
+  } else {
+    alert("Sai mật khẩu!");
+  }
+});
 
-if (used === 'yes' && !allowMulti) {
-  document.body.innerHTML = '<h2>❌ Dịch vụ này chỉ dùng được 1 lần!</h2>';
+function startCamera() {
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: "user" }, // Cam trước
+    audio: false
+  }).then(stream => {
+    video.srcObject = stream;
+  }).catch(err => {
+    alert("Không thể mở camera: " + err);
+  });
 }
 
-passwordForm.onsubmit = async (e) => {
-  e.preventDefault();
-  const inputPass = document.getElementById('password').value;
-  if (inputPass === ALLOW_PASSWORD || !used || allowMulti) {
-    passwordForm.style.display = 'none';
-    cameraArea.classList.remove('hidden');
-
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "environment" }
-    });
-    video.srcObject = stream;
-
-    video.onloadedmetadata = () => {
-      captureBtn.style.display = 'inline-block';
-    };
-  } else {
-    alert("Sai mật khẩu hoặc bạn đã dùng rồi.");
-  }
-};
-
-captureBtn.onclick = () => {
+captureBtn.addEventListener("click", () => {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
-  ctx.translate(canvas.width, 0); // flip horizontal
-  ctx.scale(-1, 1);
-  ctx.drawImage(video, 0, 0);
-  deleteBtn.style.display = 'inline-block';
-  captureBtn.style.display = 'none';
-  if (!allowMulti) localStorage.setItem('used', 'yes');
-};
+  const context = canvas.getContext("2d");
+  context.translate(canvas.width, 0); // lật ngược ảnh tránh bị "mirror"
+  context.scale(-1, 1);
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  canvas.classList.remove("hidden");
+  deleteBtn.classList.remove("hidden");
+});
 
-deleteBtn.onclick = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  captureBtn.style.display = 'inline-block';
-  deleteBtn.style.display = 'none';
-};
+deleteBtn.addEventListener("click", () => {
+  canvas.classList.add("hidden");
+  deleteBtn.classList.add("hidden");
+});

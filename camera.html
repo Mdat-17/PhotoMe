@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chụp ảnh</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h2>📷 Dịch vụ chụp ảnh</h2>
+  <form id="passwordForm">
+    <input type="password" id="password" placeholder="Nhập mật khẩu..." required />
+    <button type="submit">OK</button>
+  </form>
+
+  <div id="cameraArea" class="hidden">
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
+    <div class="buttons">
+      <button id="captureBtn">📸 Chụp</button>
+      <button id="deleteBtn" class="hidden">❌ Xóa</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

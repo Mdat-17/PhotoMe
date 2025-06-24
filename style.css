@@ -1,0 +1,24 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+video, canvas {
+  width: 90%;
+  max-width: 400px;
+  margin-top: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
+.hidden {
+  display: none;
+}
+canvas {
+  margin-bottom: 10px;
+}
+.buttons {
+  margin: 15px 0;
+}
+#captureBtn, #deleteBtn {
+  display: none;
+}

@@ -1,46 +1,47 @@
-const correctPassword = "123456"; // Mật khẩu dùng nhiều lần
-const passwordForm = document.getElementById("passwordForm");
-const passwordInput = document.getElementById("password");
-const cameraArea = document.getElementById("cameraArea");
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const captureBtn = document.getElementById("captureBtn");
-const deleteBtn = document.getElementById("deleteBtn");
+const validPasswords = ["vip001", "test001", "demo123"];
+const adminPassword = "admin123";
 
-passwordForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (passwordInput.value === correctPassword) {
-    passwordForm.classList.add("hidden");
-    cameraArea.classList.remove("hidden");
-    startCamera();
+function checkPassword() {
+  const input = document.getElementById("password").value.trim();
+  const error = document.getElementById("error");
+
+  if (validPasswords.includes(input)) {
+    // Xóa mật khẩu dùng 1 lần sau khi dùng
+    validPasswords.splice(validPasswords.indexOf(input), 1);
+    showCamera();
+  } else if (input === adminPassword) {
+    showCamera(); // admin dùng không giới hạn
   } else {
-    alert("Sai mật khẩu!");
+    error.textContent = "❌ Sai mật khẩu hoặc đã dùng rồi.";
   }
-});
-
-function startCamera() {
-  navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "user" }, // Cam trước
-    audio: false
-  }).then(stream => {
-    video.srcObject = stream;
-  }).catch(err => {
-    alert("Không thể mở camera: " + err);
-  });
 }
 
-captureBtn.addEventListener("click", () => {
+function showCamera() {
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("camera").classList.remove("hidden");
+  openCamera();
+}
+
+function openCamera() {
+  const video = document.getElementById("video");
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+    .then(stream => {
+      video.srcObject = stream;
+    })
+    .catch(err => {
+      alert("Không mở được camera: " + err);
+    });
+}
+
+function takePhoto() {
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
-  const context = canvas.getContext("2d");
-  context.translate(canvas.width, 0); // lật ngược ảnh tránh bị "mirror"
-  context.scale(-1, 1);
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  canvas.classList.remove("hidden");
-  deleteBtn.classList.remove("hidden");
-});
-
-deleteBtn.addEventListener("click", () => {
-  canvas.classList.add("hidden");
-  deleteBtn.classList.add("hidden");
-});
+  canvas.getContext("2d").drawImage(video, 0, 0);
+  const imgData = canvas.toDataURL("image/png");
+  const link = document.createElement("a");
+  link.href = imgData;
+  link.download = "photo.png";
+  link.click();
+}

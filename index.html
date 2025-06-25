@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>QR Truy cập</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Truy cập Camera</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>📱 Quét mã QR để sử dụng dịch vụ</h2>
-  <p>QR này dẫn đến trang chụp ảnh (chỉ dùng được 1 lần)</p>
-  <img id="qrcode" alt="QR code truy cập" />
-  <p id="qr-url"></p>
+  <div class="card" id="login">
+    <h2>🔐 Truy cập Dịch vụ</h2>
+    <p>Nhập mật khẩu để mở camera:</p>
+    <input type="password" id="password" placeholder="Mật khẩu...">
+    <button onclick="checkPassword()">Xác nhận</button>
+    <p id="error" class="error"></p>
+  </div>
 
-  <script>
-    const qrImg = document.getElementById("qrcode");
-    const qrUrl = document.getElementById("qr-url");
+  <div class="card hidden" id="camera">
+    <h2>📸 Chụp ảnh</h2>
+    <video id="video" autoplay playsinline></video>
+    <button onclick="takePhoto()">📷 Chụp</button>
+    <canvas id="canvas" class="hidden"></canvas>
+  </div>
 
-    // Lấy link gốc và tạo link tới camera.html
-    const baseUrl = window.location.href.replace("index.html", "");
-    const cameraLink = baseUrl + "camera.html";
-
-    qrUrl.innerText = cameraLink;
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(cameraLink)}`;
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
